@@ -26,6 +26,13 @@ class ParsedFile
     }
 
     /**
+     * Absolutely path to current file
+     *
+     * @var string|null
+     */
+    private $filepath;
+
+    /**
      * @param ClassDefinition $classes
      */
     public function addClass(ClassDefinition $class)
@@ -47,5 +54,13 @@ class ParsedFile
     public function addFunction(FunctionDefinition $function)
     {
         $this->functions[] = $function;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFilepath()
+    {
+        return $this->filepath;
     }
 }
