@@ -1,0 +1,4 @@
+[submodule "parser"]
+	path = parser
+	url = git@github.com:zephir-lang/parser.git
+	branch = master
