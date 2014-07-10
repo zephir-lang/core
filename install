@@ -1,0 +1,35 @@
+#!/bin/bash
+cd parser
+rm -f *.o *.lo
+
+#Compile lemon
+if [ ! -f lemon ]; then
+	gcc -w lemon.c -o lemon
+fi
+
+TEST=`re2c -v`
+if [ $? != 2 ]; then
+  echo "re2c is not installed"
+  exit 2
+fi
+
+re2c -o scanner.c scanner.re && ./lemon -s parser.lemon && cat base.c >> parser.c
+sed s/"\#line"/"\/\/"/g scanner.c > xx && mv -f xx scanner.c
+sed s/"#line"/"\/\/"/g parser.c > xx && mv -f xx parser.c
+export CFLAGS="-g3 -O0"
+gcc -Wl,-rpath /usr/local/lib -I/usr/local/include -L/usr/local/lib -L/opt/local/lib -g3 -w parser.c scanner.c -ljson-c -o ../bin/zephir-parser
+
+# Using the -c option will copy zephir in /usr/local/bin
+options='c'
+while getopts $options option
+do
+  if [[ "$option" == "c" ]]; then
+    cd ..
+    ZEPHIRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    sed "s#%ZEPHIRDIR%#$ZEPHIRDIR#g" bin/zephir > bin/zephir-cmd
+    chmod 755 bin/zephir-cmd
+    sudo cp bin/zephir-cmd /usr/local/bin/zephir
+    rm bin/zephir-cmd
+    exit 0
+  fi
+done
