@@ -2,6 +2,7 @@
 
 namespace Zephir\Parser;
 
+use Zephir\Definition\ClassDefinition;
 use Zephir\ParsedFile;
 use Zephir\Parser;
 
@@ -17,12 +18,30 @@ class NativeZephir implements ParserInterface
     /**
      * Parser zep file to AST
      *
-     * @param ParsedFile $parsedFile
-     * @return void|ParsedFile
      * @throws Exception
      */
     public function parse()
     {
-        system('/bin/zephir-parser ' . $this->file->getFilepath() . ' > ' . $this->file->getCachePath());
+        $json = $this->parseFile();
+
+        foreach($json as $row) {
+            switch($row->type) {
+                case 'class':
+                    $classDefinition = new ClassDefinition($row);
+
+                    $this->file->addClass($classDefinition);
+                    break;
+            }
+        }
+    }
+
+    public function parseFile()
+    {
+        system(ZEPHIRPATH . '/bin/zephir-parser ' . $this->file->getFilepath() . ' > ' . $this->file->getCachePath());
+
+        $file = file_get_contents($this->file->getCachePath());
+        $json = json_decode($file);
+
+        return $json;
     }
 } 
