@@ -2,31 +2,52 @@
 
 namespace Zephir;
 
-use Symfony\Component\Console\Application;
-use Zephir\Command;
-
-class Compiler extends Application
+/**
+ * @author Nikita Gusakov <dev@nkt.me>
+ */
+class Compiler
 {
-    const VERSION = '1.0-dev';
+    /**
+     * @var Finder
+     */
+    private $finder;
+    /**
+     * @var Preprocessor
+     */
+    private $preprocessor;
+    /**
+     * @var Generator
+     */
+    private $generator;
+    /**
+     * @var Definition\Definition[]
+     */
+    private $definitions = [];
 
-    public function __construct()
+    public function __construct(Finder $finder, Preprocessor $preprocessor, Generator $generator)
     {
-        parent::__construct('Zephir', self::VERSION);
-
-        $this->addCommands(array(
-            new Command\BuildCommand(),
-        ));
+        $this->finder = $finder;
+        $this->preprocessor = $preprocessor;
+        $this->generator = $generator;
     }
 
-    public function getHelp()
+    public function parse()
     {
-        return <<<EOL
- _____              __    _
-/__  /  ___  ____  / /_  (_)____
-  / /  / _ \/ __ \/ __ \/ / ___/
- / /__/  __/ /_/ / / / / / /
-/____/\___/ .___/_/ /_/_/_/
-         /_/
-EOL;
+        foreach ($this->finder->getInputFiles() as $file) {
+            $code = $this->finder->load($file->getPathname());
+            foreach ($this->preprocessor->parse($code) as $definition) {
+                $this->definitions[] = $definition;
+            }
+        }
     }
-} 
+
+    public function compile()
+    {
+        $this->generator->setDefinitions($this->definitions);
+        foreach ($this->definitions as $definition) {
+            foreach ($this->generator->generate($definition) as $name => $code) {
+                $this->finder->put($name, $code);
+            }
+        }
+    }
+}
