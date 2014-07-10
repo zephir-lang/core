@@ -2,12 +2,31 @@
 
 namespace Zephir;
 
-use Zephir\Parser\Parser;
+use Symfony\Component\Console\Application;
+use Zephir\Command;
 
-class Compiler
+class Compiler extends Application
 {
-    public function __construct(Parser $parser)
-    {
+    const VERSION = '1.0-dev';
 
+    public function __construct()
+    {
+        parent::__construct('Zephir', self::VERSION);
+
+        $this->addCommands(array(
+            new Command\BuildCommand(),
+        ));
+    }
+
+    public function getHelp()
+    {
+        return <<<EOL
+ _____              __    _
+/__  /  ___  ____  / /_  (_)____
+  / /  / _ \/ __ \/ __ \/ / ___/
+ / /__/  __/ /_/ / / / / / /
+/____/\___/ .___/_/ /_/_/_/
+         /_/
+EOL;
     }
 } 
