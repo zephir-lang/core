@@ -3,9 +3,17 @@
 namespace Zephir\Parser;
 
 use Zephir\ParsedFile;
+use Zephir\Parser;
 
-class NativeZephir implements Parser
+class NativeZephir implements ParserInterface
 {
+    protected $file;
+
+    public function __construct(ParsedFile $parsedFile)
+    {
+        $this->file = $parsedFile;
+    }
+
     /**
      * Parser zep file to AST
      *
@@ -13,16 +21,8 @@ class NativeZephir implements Parser
      * @return void|ParsedFile
      * @throws Exception
      */
-    public function parse(ParsedFile $parsedFile)
+    public function parse()
     {
-        $filepath = $parsedFile->getFilepath();
-
-        if (!is_file($filepath)) {
-            throw new Exception('Couldn`t find file by path: ' . $filepath);
-        }
-
-        if (!is_readable($filepath)) {
-            throw new Exception('File is not readable: ' . $filepath);
-        }
+        system('/bin/zephir-parser ' . $this->file->getFilepath() . ' > ' . $this->file->getCachePath());
     }
 } 

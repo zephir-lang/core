@@ -18,6 +18,13 @@ class ParsedFile
     private $functions = [];
 
     /**
+     * File path
+     *
+     * @var array
+     */
+    private $filepath;
+
+    /**
      * @return ClassDefinition
      */
     public function getClasses()
@@ -25,12 +32,6 @@ class ParsedFile
         return $this->classes;
     }
 
-    /**
-     * Absolutely path to current file
-     *
-     * @var string|null
-     */
-    private $filepath;
 
     /**
      * @param ClassDefinition $classes
@@ -61,6 +62,32 @@ class ParsedFile
      */
     public function getFilepath()
     {
-        return $this->filepath;
+        return $this->filepath['dirname'] . DIRECTORY_SEPARATOR . $this->filepath['basename'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFileName()
+    {
+        return $this->filepath['filename'];
+    }
+
+    public function getCachePath()
+    {
+        return ZEPHIRPATH . '/.cache/' . $this->getFileName() . '.json';
+    }
+
+    public function __construct($filepath)
+    {
+        if (!is_file($filepath)) {
+            throw new Exception('Couldn`t find file by path: ' . $filepath);
+        }
+
+        if (!is_readable($filepath)) {
+            throw new Exception('File is not readable: ' . $filepath);
+        }
+
+        $this->filepath = pathinfo($filepath);
     }
 }
