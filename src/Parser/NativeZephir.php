@@ -3,14 +3,14 @@
 namespace Zephir\Parser;
 
 use Zephir\Definition\ClassDefinition;
-use Zephir\ParsedFile;
+use Zephir\FileCompiler;
 use Zephir\Parser;
 
 class NativeZephir implements ParserInterface
 {
     protected $file;
 
-    public function __construct(ParsedFile $parsedFile)
+    public function __construct(FileCompiler $parsedFile)
     {
         $this->file = $parsedFile;
     }

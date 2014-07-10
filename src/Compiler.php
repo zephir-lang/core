@@ -4,6 +4,7 @@ namespace Zephir;
 
 /**
  * @author Nikita Gusakov <dev@nkt.me>
+ * @author Dmitry Patsura <zaets28rus@gmail.com>
  */
 class Compiler
 {
@@ -19,12 +20,13 @@ class Compiler
      * @var Generator
      */
     private $generator;
-    /**
-     * @var Definition\Definition[]
-     */
-    private $definitions = [];
 
-    public function __construct(Finder $finder, Preprocessor $preprocessor, Generator $generator)
+    /**
+     * @var FileCompiler[]
+     */
+    private $files = [];
+
+    public function __construct(Finder $finder, Preprocessor $preprocessor, $generator)
     {
         $this->finder = $finder;
         $this->preprocessor = $preprocessor;
@@ -35,19 +37,15 @@ class Compiler
     {
         foreach ($this->finder->getInputFiles() as $file) {
             $code = $this->finder->load($file->getPathname());
-            foreach ($this->preprocessor->parse($code) as $definition) {
-                $this->definitions[] = $definition;
-            }
         }
+
+        return $this;
     }
 
     public function compile()
     {
-        $this->generator->setDefinitions($this->definitions);
-        foreach ($this->definitions as $definition) {
-            foreach ($this->generator->generate($definition) as $name => $code) {
-                $this->finder->put($name, $code);
-            }
-        }
+        /**
+         * @todo
+         */
     }
 }

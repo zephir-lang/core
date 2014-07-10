@@ -5,7 +5,7 @@ namespace Zephir;
 use Zephir\Definition\ClassDefinition;
 use Zephir\Definition\FunctionDefinition;
 
-class ParsedFile
+class FileCompiler
 {
     /**
      * @var ClassDefinition[]

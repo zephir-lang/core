@@ -19,15 +19,25 @@
 
 namespace Zephir\Command;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * BuildCommand
  * @author Gusakov Nikita <dev@nkt.me>
  */
-class BuildCommand extends AbstractCommand
+class BuildCommand extends \Symfony\Component\Console\Command\Command
 {
     public function configure()
     {
         $this->setName('build');
         $this->setDescription('Generates, compile and install extension');
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->getApplication()->getCompiler()
+            ->parse()
+            ->compile();
     }
 }
