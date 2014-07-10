@@ -5,7 +5,7 @@ namespace Zephir\Definition;
 /**
  * @author Nikita Gusakov <dev@nkt.me>
  */
-class ArgumentDefinition extends VariableDefinition
+class MethodDefinition extends FunctionDefinition
 {
-
+    use ModifierTrait;
 }

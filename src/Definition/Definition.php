@@ -10,7 +10,25 @@ abstract class Definition
     /**
      * @var string
      */
-    protected $name;
+    private $file;
+    /**
+     * @var int
+     */
+    private $line;
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @param string $file
+     * @param int    $line
+     */
+    public function __construct($file, $line)
+    {
+        $this->file = $file;
+        $this->line = $line;
+    }
 
     public function getName()
     {
