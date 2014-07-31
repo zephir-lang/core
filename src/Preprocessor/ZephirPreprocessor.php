@@ -26,11 +26,11 @@ class ZephirPreprocessor implements Preprocessor
     /**
      * {@inheritdoc}
      */
-    public function parse($code)
+    public function parse($path)
     {
         $output = [];
         $code = 0;
-        exec($this->parserPath, $output, $code);
+        exec($this->parserPath . ' ' . $path, $output, $code);
         $output = json_decode(join('', $output));
         if ($code === 0) {
             return $output;

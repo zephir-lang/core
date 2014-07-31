@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+use Zephir\Preprocessor\ZephirPreprocessor;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$finder = new \Zephir\Finder(__DIR__ . '/../tests/fixtures', 'zep', __DIR__ . '/build');
+$preprocessor = new ZephirPreprocessor('/Users/nkt/Projects/zephir/bin/zephir-parser');
+$generator = new \Zephir\Generator\ExtensionGenerator();
+$compiler = new \Zephir\Compiler($finder, $preprocessor, $generator);
+$compiler->parse();
+var_dump($compiler);

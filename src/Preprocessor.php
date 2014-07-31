@@ -8,9 +8,9 @@ namespace Zephir;
 interface Preprocessor
 {
     /**
-     * @param string $code
+     * @param string $filename
      *
      * @return Definition\Definition[]
      */
-    public function parse($code);
+    public function parse($filename);
 }

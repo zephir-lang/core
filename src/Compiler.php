@@ -34,8 +34,7 @@ class Compiler
     public function parse()
     {
         foreach ($this->finder->getInputFiles() as $file) {
-            $code = $this->finder->load($file->getPathname());
-            foreach ($this->preprocessor->parse($code) as $definition) {
+            foreach ($this->preprocessor->parse($file->getPathname()) as $definition) {
                 $this->definitions[] = $definition;
             }
         }
